@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "524eab5a-5caf-4070-a238-82b832e29c8f",
+		"name": "Мегафон",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38967696",
+		"_collection_link": "https://planetary-satellite-401074.postman.co/workspace/%D0%B4%D0%BE%D0%BC%D0%B0%D1%88%D0%BA%D0%B8~1023064b-6af4-4221-92be-6bb795c5a76f/collection/38967696-524eab5a-5caf-4070-a238-82b832e29c8f?action=share&source=collection_link&creator=38967696"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const productId = 196914;\r",
+							"const expectedAmount = 1;\r",
+							"\r",
+							"// Парсим ответ\r",
+							"let responseData = pm.response.json().payload.order.basket.items;\r",
+							"\r",
+							"// Ищем товар с нужным productId\r",
+							"let foundProduct = responseData.find(item => item.id === productId);\r",
+							"\r",
+							"if (!foundProduct) {\r",
+							"    pm.test.fail(`Товар с id=${productId} не найден в корзине.`);\r",
+							"} else {\r",
+							"    // Проверяем количество товара\r",
+							"    pm.test(`Количество товара с id=${productId} должно быть равным ${expectedAmount}`, function() {\r",
+							"        pm.expect(foundProduct.amount).to.eql(expectedAmount);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "{{EJWT}};  {{ID_SESSION}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"context\":{\"branchId\":3,\"orderId\":35785949,\"clientId\":9204226,\"extSystemId\":0,\"cityId\":1817},\"operations\":[{\"operation\":\"OrderAddGoodToBasket\",\"arguments\":{\"goodId\":196914,\"quantity\":1}}]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://vologda.shop.megafon.ru/api/checkout/batch/order"
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const productId = 196914;\r",
+							"const expectedAmount = 2;\r",
+							"\r",
+							"// Парсим ответ\r",
+							"let responseData = pm.response.json().payload.order.basket.items;\r",
+							"\r",
+							"// Ищем товар с нужным productId\r",
+							"let foundProduct = responseData.find(item => item.id === productId);\r",
+							"\r",
+							"if (!foundProduct) {\r",
+							"    pm.test.fail(`Товар с id=${productId} не найден в корзине.`);\r",
+							"} else {\r",
+							"    // Проверяем количество товара\r",
+							"    pm.test(`Количество товара с id=${productId} должно быть равным ${expectedAmount}`, function() {\r",
+							"        pm.expect(foundProduct.amount).to.eql(expectedAmount);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-host",
+						"value": "vologda.shop.megafon.ru",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{EJWT}};  {{ID_SESSION}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"quantity\":2}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}order/35785949/basket/4/quantity?clientId=9204226&cityId=1432",
+					"host": [
+						"{{BASE_URL}}order"
+					],
+					"path": [
+						"35785949",
+						"basket",
+						"4",
+						"quantity"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "9204226"
+						},
+						{
+							"key": "cityId",
+							"value": "1432"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Определяем ID товара, который должен быть удалён\r",
+							"const deletedProductId = 196914; \r",
+							"\r",
+							"// Получаем ответ от сервера\r",
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"// Проверяем, что товар с указанным ID отсутствует в корзине\r",
+							"const matchingProducts = responseData.payload.order.basket.items.filter(\r",
+							"    item => item.cart && item.cart.goodId === deletedProductId\r",
+							");\r",
+							"\r",
+							"// Проверяем, что товар удалён (количество товаров с указанным ID равно нулю)\r",
+							"pm.test(`Товар с goodId=${deletedProductId} удалён из корзины`, function () {\r",
+							"    pm.expect(matchingProducts.length).to.be.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-host",
+						"value": "vologda.shop.megafon.ru",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{EJWT}};  {{ID_SESSION}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}order/35785949/basket/4/remove?clientId=9204226&cityId=1432",
+					"host": [
+						"{{BASE_URL}}order"
+					],
+					"path": [
+						"35785949",
+						"basket",
+						"4",
+						"remove"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "9204226"
+						},
+						{
+							"key": "cityId",
+							"value": "1432"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "EJWT",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ID_SESSION",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "BASE_URL",
+			"value": "https://api.shop.megafon.ru/eshop/checkout/v2/",
+			"type": "string"
+		}
+	]
+}
