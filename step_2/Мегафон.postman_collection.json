@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "New Request",
+			"name": "Добавление товара",
 			"event": [
 				{
 					"listen": "test",
@@ -46,7 +46,7 @@
 				"header": [
 					{
 						"key": "Cookie",
-						"value": "{{EJWT}};  {{ID_SESSION}}",
+						"value": "{{EJWT}}; {{ID_SESSION}}",
 						"type": "text"
 					}
 				],
@@ -64,7 +64,7 @@
 			"response": []
 		},
 		{
-			"name": "New Request",
+			"name": "Изменение количества товара",
 			"event": [
 				{
 					"listen": "test",
@@ -107,7 +107,7 @@
 					},
 					{
 						"key": "Cookie",
-						"value": "{{EJWT}};  {{ID_SESSION}}",
+						"value": "{{ID_SESSION}}; {{EJWT}}",
 						"type": "text"
 					}
 				],
@@ -121,14 +121,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{BASE_URL}}order/35785949/basket/4/quantity?clientId=9204226&cityId=1432",
+					"raw": "{{BASE_URL}}order/35785949/basket/1/quantity?clientId=9204226&cityId=1432",
 					"host": [
 						"{{BASE_URL}}order"
 					],
 					"path": [
 						"35785949",
 						"basket",
-						"4",
+						"1",
 						"quantity"
 					],
 					"query": [
@@ -146,7 +146,7 @@
 			"response": []
 		},
 		{
-			"name": "New Request",
+			"name": "Удаление товара",
 			"event": [
 				{
 					"listen": "test",
@@ -201,14 +201,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{BASE_URL}}order/35785949/basket/4/remove?clientId=9204226&cityId=1432",
+					"raw": "{{BASE_URL}}order/35785949/basket/1/remove?clientId=9204226&cityId=1432",
 					"host": [
 						"{{BASE_URL}}order"
 					],
 					"path": [
 						"35785949",
 						"basket",
-						"4",
+						"1",
 						"remove"
 					],
 					"query": [
