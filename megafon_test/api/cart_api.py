@@ -47,7 +47,7 @@ class ApiFixture:
         client_id = self._order['clientId']
 
         url = (
-            f"https://api.shop.megafon.ru/eshop/checkout/v2/order/{order_id}" 
+            f"{config_api.CART_URL}order/{order_id}" 
             f"/basket/{self._position}/remove?clientId={client_id}&&cityId=1817"
         )
 
@@ -63,7 +63,7 @@ class ApiFixture:
         :param new_quantity: Новое количество товара. """
         try:
             url = (
-                f"https://api.shop.megafon.ru/eshop/checkout/v2/order/{self._order['orderId']}"
+                f"{config_api.CART_URL}order/{self._order['orderId']}"
                 f"/basket/{self._position}/quantity"
                 f"?clientId={self._order['clientId']}&cityId=1432"
             )
@@ -78,7 +78,6 @@ class ApiFixture:
 
     @allure.step("Получение информации о текущем заказе")
     def get_current_order(self):
-        """ Получает данные о текущем заказе клиента."""
         url = 'https://api.shop.megafon.ru/eshop/checkout/v2/order/info'
         headers = self._headers.copy()
         headers["X-Host"] = "vologda.shop.megafon.ru"
@@ -89,9 +88,6 @@ class ApiFixture:
 
     @allure.step("Получение списка товаров в корзине по ID продукта")
     def get_products_in_order_by_id(self, id: int):
-        """ Поиск товаров в корзине по заданному ID продукта. 
-        :param id: ID искомого товара. 
-        :return: Список продуктов, соответствующих указанному ID. """
         order = self.get_current_order()
 
         if order == None:
@@ -100,9 +96,8 @@ class ApiFixture:
         products = order['basket']['items']
         if len(products) == 0:
             return None
-
-        products_list_by_id = list(
-            filter(lambda x: x['cart']['goodId'] == id, products))
+        
+        products_list_by_id = list(filter(lambda x: x['cart']['goodId'] == id, products))
         if len(products_list_by_id) > 0:
             return products_list_by_id
         else:
