@@ -34,6 +34,41 @@
 							"    pm.test(`Количество товара с id=${productId} должно быть равным ${expectedAmount}`, function() {\r",
 							"        pm.expect(foundProduct.amount).to.eql(expectedAmount);\r",
 							"    });\r",
+							"}\r",
+							"\r",
+							"// Функция для рекурсивного поиска товара по productId\r",
+							"const findItemByProductId = function(data, idToFind) {\r",
+							"    if (!data || typeof data !== 'object') return undefined;\r",
+							"    // Если объект имеет свойство items и это массив\r",
+							"    if (Array.isArray(data.items)) {\r",
+							"        for (let i = 0; i < data.items.length; i++) {\r",
+							"            const item = data.items[i];\r",
+							"            // Проверяем наличие свойства id и сравниваем его с искомым значением\r",
+							"            if (item.id === idToFind) {\r",
+							"                return { position: i + 1 }; // Возвращаем индекс плюс один (так как индексы начинаются с нуля)\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"    // Продолжаем поиск среди свойств объекта\r",
+							"    for (let key in data) {\r",
+							"        let found = findItemByProductId(data[key], idToFind);\r",
+							"        if (found) {\r",
+							"            return found;\r",
+							"        }\r",
+							"    }\r",
+							"};\r",
+							"let responseBody = pm.response.json(); // Получаем JSON-тело ответа\r",
+							"// Находим позицию товара\r",
+							"let result = findItemByProductId(responseBody.payload.order.basket, productId);\r",
+							"// Если товар найден, сохраняем его позицию в переменные коллекции\r",
+							"if (result && result.position) {\r",
+							"    console.log(`Продукт найден на позиции ${result.position}`);\r",
+							"    // Устанавливаем переменную коллекции\r",
+							"    pm.collectionVariables.set(\"product_position\", result.position.toString());\r",
+							"    // Проверяем, успешно ли присвоилась переменная\r",
+							"    console.log(\"Сохранённая переменная:\", pm.collectionVariables.get(\"product_position\"));\r",
+							"} else {\r",
+							"    console.error('Продукт не найден');\r",
 							"}"
 						],
 						"type": "text/javascript",
@@ -121,14 +156,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{BASE_URL}}order/35785949/basket/1/quantity?clientId=9204226&cityId=1432",
+					"raw": "{{BASE_URL}}order/35785949/basket/{{product_position}}/quantity?clientId=9204226&cityId=1432",
 					"host": [
 						"{{BASE_URL}}order"
 					],
 					"path": [
 						"35785949",
 						"basket",
-						"1",
+						"{{product_position}}",
 						"quantity"
 					],
 					"query": [
@@ -201,14 +236,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{BASE_URL}}order/35785949/basket/1/remove?clientId=9204226&cityId=1432",
+					"raw": "{{BASE_URL}}order/35785949/basket/{{product_position}}/remove?clientId=9204226&cityId=1432",
 					"host": [
 						"{{BASE_URL}}order"
 					],
 					"path": [
 						"35785949",
 						"basket",
-						"1",
+						"{{product_position}}",
 						"remove"
 					],
 					"query": [
@@ -263,6 +298,10 @@
 			"key": "BASE_URL",
 			"value": "https://api.shop.megafon.ru/eshop/checkout/v2/",
 			"type": "string"
+		},
+		{
+			"key": "product_position",
+			"value": ""
 		}
 	]
 }
